@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<title>お問い合わせ</title>
+<meta charset="UTF-8">
+<meta name="robots" content="noindex">
+<meta name="robots" content="nofollow">
+<meta name="description" content="" />
+<meta name="keywords" content="" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0">
+<link href="contact/css/destyle.css" rel="stylesheet">
+
+<link href="contact/css/contact.css" rel="stylesheet"><!-- スタイルを流用する場合はcssも挿入ページに追加すること -->
+</head>
+
+<body>
+
+<!-- 必要な部分 -->
+
+<div class="form-area">
+  <div class="form-area-title">
+    <p>お問い合わせ</p>
+  </div>
+
+  <form id="formArea" name="formarea" method="post">
+
+    <dl class="form-area-list">
+
+      <div class="form-area-list-item">
+        <dt><label for="content">お問い合わせ内容</label></dt>
+        <dd>
+          <textarea name="content" id="content"></textarea>
+        </dd>
+      </div>
+
+      <div class="form-area-list-item">
+        <dt><label for="name">お名前</label></dt>
+        <dd>
+          <input type="text" id="name" name="name">
+        </dd>
+      </div>
+
+      <div class="form-area-list-item">
+        <dt><label for="company">法人名</label></dt>
+        <dd>
+          <input type="text" id="company" name="company">
+        </dd>
+      </div>
+
+      <div class="form-area-list-item">
+        <dt><label for="email">メールアドレス</label></dt>
+        <dd>
+          <input type="text" id="email" name="email">
+        </dd>
+      </div>
+
+      <div class="form-area-list-item">
+        <dt><label for="postalcode">郵便番号</label></dt>
+        <dd>
+          <input type="text" id="postalcode" name="postalcode">
+        </dd>
+      </div>
+
+      <div class="form-area-list-item">
+        <dt><label for="address">ご住所</label></dt>
+        <dd>
+          <input type="text" id="address" name="address">
+        </dd>
+      </div>
+
+      <div class="form-area-list-item">
+        <dt><label for="tel">電話番号</label></dt>
+        <dd>
+          <input type="text" id="tel" name="tel">
+        </dd>
+      </div>
+
+      <div class="form-area-list-item">
+        <dt><span>ラジオボタン</span></dt>
+        <dd id="type">
+          <input id="type1" type="radio" name="type" value="その1"><label for="type1" class="radio-label">その1</label>
+          <input id="type2" type="radio" name="type" value="その2"><label for="type2" class="radio-label">その2</label>
+          <input id="type3" type="radio" name="type" value="その3"><label for="type3">その3</label>
+        </dd>
+        <!-- ラジオボタンのnameと親要素のidを同じにすること -->
+      </div>
+
+      <div class="form-area-list-item">
+        <dt><span>ラジオボタン（必須）</span></dt>
+        <dd id="type1">
+          <input id="type1-1" type="radio" name="type1" value="その1"><label for="type1-1" class="radio-label">その1</label>
+          <input id="type1-2" type="radio" name="type1" value="その2"><label for="type1-2" class="radio-label">その2</label>
+          <input id="type1-3" type="radio" name="type1" value="その3"><label for="type1-3">その3</label>
+        </dd>
+        <!-- ラジオボタンのnameと親要素のidを同じにすること -->
+      </div>
+
+      <div class="form-area-list-item">
+        <dt><span>チェックボックス</span></dt>
+        <dd id="check">
+          <input id="check1" type="checkbox" name="check" value="その1"><label for="check1" class="radio-label">その1</label>
+          <input id="check2" type="checkbox" name="check" value="その2"><label for="check2" class="radio-label">その2</label>
+          <input id="check3" type="checkbox" name="check" value="その3"><label for="check3">その3</label>
+        </dd>
+        <!-- チェックボックスのnameと親要素のidを同じにすること -->
+      </div>
+
+      <div class="form-area-list-item">
+        <dt><span>チェックボックス</span></dt>
+        <dd id="check1">
+          <input id="check1-1" type="checkbox" name="check1" value="その1"><label for="check1-1" class="radio-label">その1</label>
+          <input id="check1-2" type="checkbox" name="check1" value="その2"><label for="check1-2" class="radio-label">その2</label>
+          <input id="check1-3" type="checkbox" name="check1" value="その3"><label for="check1-3">その3</label>
+        </dd>
+        <!-- チェックボックスのnameと親要素のidを同じにすること -->
+      </div>
+
+    </dl>
+
+    <p class="form-area-notice">※ご入力内容に誤りがないかご確認の上送信してください。</p>
+
+    <div id="errorsArea" class="form-area-errors"></div>
+
+    <div class="form-area-submit">
+      <button id="sendBtn" type="button" class="form-area-submit-btn disable" name="btn">送信</button><!-- disableクラスを消さないこと -->
+    </div>
+
+  </form>
+</div>
+
+
+<!-- /必要な部分 -->
+
+<script type="text/javascript" src="contact/js/contact.js"></script><!-- このjsは挿入ページに追加すること -->
+</body>
+</html>
