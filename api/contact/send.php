@@ -2,6 +2,8 @@
 
 // ドメインを使用サイトのものに書き換える
 header("Access-Control-Allow-Origin: 使用サイト");
+
+// ここから下は触らない
 header("Access-Control-Allow-Headers: Content-Type");
 header("Access-Control-Allow-Methods: POST, OPTIONS");
 
@@ -17,7 +19,15 @@ if( $json ) {
   checkAllBlank( $inputs );
 
   foreach( $inputs as $key => $value ) {
-    $inputs_text .= h( $key ). ": ". h( $value ). "\n";
+    if( is_array( $value ) ) {
+      $inputs_text .= h( $key ). ": ";
+      foreach( $value as $item ) {
+        $inputs_text .= h( $item ). ", ";
+      }
+      $inputs_text .= "\n";
+    } else {
+      $inputs_text .= h( $key ). ": ". h( $value ). "\n";
+    }
   }
 } else {
   $api_header;
