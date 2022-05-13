@@ -1,7 +1,7 @@
 <?php
 
 // ドメインを使用サイトのものに書き換える
-header("Access-Control-Allow-Origin: ドメイン");
+header("Access-Control-Allow-Origin: 使用サイト");
 
 // ここから下は触らない
 header("Access-Control-Allow-Headers: Content-Type");
