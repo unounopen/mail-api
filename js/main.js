@@ -1,6 +1,6 @@
 const Mail = new UnoMail( {
-  apiUrl: 'ドメイン/api/contact/send.php',
-  thxUrl: 'ドメイン/contact/thanks.html',
+  apiUrl: 'http://sample/api/contact/send.php',
+  thxUrl: 'http://sample/contact/thanks.html',
   requires: [ 'content', 'name', 'email', 'type1', 'check1' ],
   formId: 'formArea',
   submitId: 'sendBtn',
