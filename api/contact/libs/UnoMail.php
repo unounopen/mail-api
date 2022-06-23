@@ -21,7 +21,7 @@ class UnoMail
 
     if ( is_array( $var ) ) {
 
-      return array_map( 'h', $var );
+      return array_map( array( $this, 'h' ), $var );
     }
     else {
 
@@ -34,7 +34,7 @@ class UnoMail
 
     if( is_array( $var ) ) {
 
-      return array_map( 'checkInput', $var );
+      return array_map( array( $this, 'checkInput' ), $var );
     }
     else {
 
@@ -184,7 +184,7 @@ class UnoMail
     if ( $_SERVER['REQUEST_METHOD'] === 'POST' ) {
 
       $this->mail_body = $this->mail_intro_text . "\n\n" . $this->inputs_text;
-      $this->mailTo = mb_encode_mimeheader( $this->options['mail_to_name'] ) . "<" . $this->options['mail_to_address'] . ">";
+      $this->mail_to = mb_encode_mimeheader( $this->options['mail_to_name'] ) . "<" . $this->options['mail_to_address'] . ">";
       $this->mail_from_name = $this->deleteLf( $this->h( $this->inputs[ $this->options['mail_from_name_id'] ] ) );
       $this->mail_from_address = $this->deleteLf( $this->h( $this->inputs[ $this->options['mail_from_address_id'] ] ) );
 

@@ -25,176 +25,140 @@ function UnoMail( myOptions ) {
     }
   }
 
-  // 入力時に値を取得してバリデーションチェック
-  // ノーマル
-  this.getText = function ( label ) {
+  // テキスト要素
+  this.getText = function ( id, label, error = null, flag = null ) {
 
-    formField.addEventListener( 'change', function () {
+    const field = document.getElementById( id );
 
-      let field = document.getElementById( label );
+    field.addEventListener( 'change', () => {
+
       let value = field.value;
 
-      inputs[ label ] = value;
+      inputs[ id ] = {
+        label: label,
+        value: value
+      };
+
+      if ( error !== null ) {
+
+        if ( flag == null ) { // 必須チェック
+
+          if ( value.length < 1 ) {
+
+            errors[ id ] = error;
+          }
+          else if ( errors[ id ].length > 0 ) {
+
+            errors[ id ] = '';
+          }
+        }
+        else if ( flag == 'tel' ) { // 電話番号チェック
+
+          if ( value.length < 7 || isNaN( Number( value ) ) ) {
+
+            errors[ id ] = error;
+            inputs[ id ] = {
+              label: label,
+              value: null
+            };
+          }
+          else if ( errors[ id ].length > 0 ) {
+
+            errors[ id ] = '';
+          }
+        }
+        else if ( flag == 'email' ) { // メールアドレスチェック
+
+          const reg = new RegExp(/^[A-Za-z0-9]{1}[A-Za-z0-9_.-]*@{1}[A-Za-z0-9_.-]{1,}\.[A-Za-z0-9]{1,}$/);
+
+          if ( value.length < 1 || !reg.test( value ) ) {
+
+            errors[ id ] = error;
+            inputs[ id ] = {
+              label: label,
+              value: null
+            };
+          }
+          else if ( errors[ id ].length > 0 ) {
+
+            errors[ id ] = '';
+          }
+        }
+        else if ( flag == 'postalcode' ) { // 郵便番号チェック
+
+          if ( value.length < 7 || isNaN( Number( value ) ) ) {
+
+            errors[ id ] = error;
+            inputs[ id ] = {
+              label: label,
+              value: null
+            };
+          }
+          else if ( errors[ id ].length > 0 ) {
+
+            errors[ id ] = '';
+          }
+        }
+      }
     } );
   }
 
   // ラジオボタン
-  this.getRadio = function ( label ) {
+  this.getRadio = function ( id, label ) {
 
-    formField.addEventListener( 'change', function () {
-      let value = null;
-      let radios = document.getElementsByName( label );
+    const radios = document.getElementsByName( id );
+    let value = null;
 
-      each( radios, function ( radio ) {
+    each( radios, function ( radio ) {
+
+      radio.addEventListener( 'change', () => {
+
         if ( radio.checked ) {
 
           value = radio.value;
         }
       } );
-      inputs[ label ] = value;
     } );
+
+    inputs[ id ] = {
+      label: label,
+      value: value
+    };
   }
 
   // チェックボックス
-  this.getCheckbox = function ( label ) {
-    formField.addEventListener( 'change', function () {
+  this.getCheckbox = function ( id, label, error ) {
 
-      let values = [];
-      let checkboxes = document.getElementsByName( label );
+    const checkboxes = document.getElementsByName( id );
+    let values = [];
 
-      each( checkboxes, function ( checkbox ) {
+    each( checkboxes, function ( checkbox ) {
+
+      checkbox.addEventListener( 'change', () => {
+
         if ( checkbox.checked ) {
 
           values.push( checkbox.value );
         }
       } );
-      inputs[ label ] = values;
     } );
-  }
 
-  // 必須チェック
-  // テキスト要素
-  this.requireText = function ( label, error ) {
-    formField.addEventListener( 'change', function () {
+    inputs[ id ] = {
+      label: label,
+      value: values
+    };
 
-      let field = document.getElementById( label );
-      let value = field.value;
-
-      if ( value.length < 1 ) {
-
-        errors[ label ] = error;
-      }
-      else if ( errors[ label ] !== '' ) {
-
-        errors[ label ] = '';
-      }
-
-      inputs[ label ] = value;
-    } );
-  }
-
-  // チェックボックス
-  this.requireCheckbox = function ( label, error ) {
-
-    formField.addEventListener( 'change', function () {
-
-      let values = [];
-      let checkboxes = document.getElementsByName( label );
-
-      each( checkboxes, function ( checkbox ) {
-        if ( checkbox.checked ) {
-
-          values.push( checkbox.value );
-        }
-      } );
+    if ( error != null ) {
 
       if ( values.length == 0 ) {
 
-        errors[ label ] = error;
+        errors[ id ] = error;
       }
-      else if ( errors[ label ] !== '' ) {
+      else if ( errors[ id ] !== '' ) {
 
-        errors[ label ] = '';
+        errors[ id ] = '';
       }
-
-      inputs[ label ] = values;
-    } );
-  }
-
-  // メールアドレスチェック
-  this.checkEmail = function ( label, error ) {
-
-    formField.addEventListener( 'change', function () {
-
-      let field = document.getElementById( label );
-      let value = field.value;
-      const reg = new RegExp(/^[A-Za-z0-9]{1}[A-Za-z0-9_.-]*@{1}[A-Za-z0-9_.-]{1,}\.[A-Za-z0-9]{1,}$/);
-
-      if ( value.length < 1 || !reg.test( value ) ) {
-
-        errors[ label ] = error;
-        inputs[ label ] = null;
-      }
-      else if ( errors[ label ] !== '' ) {
-
-        errors[ label ] = '';
-        inputs[ label ] = value;
-      }
-      else {
-
-        inputs[ label ] = value;
-      }
-    } );
-  }
-
-  // 郵便番号チェック
-  this.checkPostalcode = function ( label, error ) {
-
-    formField.addEventListener( 'change', function () {
-
-      let field = document.getElementById( label );
-      let value = field.value;
-
-      if ( value.length < 7 || isNaN( Number( value ) ) ) {
-
-        errors[ label ] = error;
-        inputs[ label ] = null;
-      }
-      else if ( errors[ label ] !== '' ) {
-
-        errors[ label ] = '';
-        inputs[ label ] = value;
-      }
-      else {
-
-        inputs[ label ] = value;
-      }
-    } );
-  }
-
-  // 電話番号チェック
-  this.checkTel = function ( label, error ) {
-
-    formField.addEventListener( 'change', function () {
-
-      let field = document.getElementById( label );
-      let value = field.value;
-
-      if ( value.length < 6 || isNaN( Number( value ) ) ) {
-
-        errors[ label ] = error;
-        inputs[ label ] = null;
-      }
-      else if ( errors[ label ] !== '' ) {
-
-        errors[ label ] = '';
-        inputs[ label ] = value;
-      }
-      else {
-
-        inputs[ label ] = value;
-      }
-    } );
+    }
   }
 
   // エラーの有無をチェック
@@ -211,7 +175,7 @@ function UnoMail( myOptions ) {
 
       var require = options.requires[ i ];
 
-      if ( inputs[ require ] === null || !inputs[ require ] ) {
+      if ( inputs[ require ].value === null || !inputs[ require ].value ) {
         return true;
       }
     }
@@ -232,28 +196,34 @@ function UnoMail( myOptions ) {
     } );
 
     cautionArea.innerHTML = errorsText;
-  }
+  };
+
+  // 読み込み時には送信ボタンが使用不可
+  ( () => {
+
+    window.addEventListener( 'DOMContentLoaded', () => {
+
+      submitBtn.disabled = true;
+    } );
+  } )();
 
   // エラー表示と送信ボタンの切り替え
-  this.switchSubmitBtn = function () {
+  ( () => {
 
     formField.addEventListener( 'change', function () {
 
       if ( isError() ) {
 
         writeErrors();
-        if ( submitBtn.classList.contains( options.disableClass ) === false ) {
-
-          submitBtn.classList.add( options.disableClass );
-        }
+        submitBtn.disabled = true;
       }
       else {
 
         cautionArea.innterHTML = '';
-        submitBtn.classList.remove( options.disableClass );
+        submitBtn.disabled = false;
       }
     } )
-  }
+  } )();
 
   // apiとの通信
   var sendMail = async function ( url, inputs ) {
@@ -286,10 +256,11 @@ function UnoMail( myOptions ) {
     } );
 
     return response;
-  }
+  };
 
   // 送信ボタンの処理
-  this.sendData = function () {
+
+  ( () => {
 
     submitBtn.addEventListener( 'click', async function () {
 
@@ -311,7 +282,7 @@ function UnoMail( myOptions ) {
         }
       }
     } )
-  }
+  } )();
 
 
 }

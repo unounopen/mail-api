@@ -85,7 +85,7 @@ textarea {
   font-size: 1.5rem;
   cursor: pointer;
 }
-.form-area-submit-btn.disable {
+.form-area-submit-btn:disabled {
   background-color: #aaa;
   cursor: default;
 }
