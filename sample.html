@@ -10,7 +10,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0">
 <link href="contact/css/destyle.css" rel="stylesheet">
 
-<link href="contact/css/contact.css" rel="stylesheet"><!-- スタイルを流用する場合はcssも挿入ページに追加すること -->
+<link href="contact/css/contact.css" rel="stylesheet"><!-- スタイルを流用する場合はcssも挿入ページに追加する -->
 </head>
 
 <body>
@@ -77,32 +77,29 @@
 
       <div class="form-area-list-item">
         <dt><span>ラジオボタン</span></dt>
-        <dd id="type">
+        <dd>
           <input id="type1" type="radio" name="type" value="その1"><label for="type1" class="radio-label">その1</label>
           <input id="type2" type="radio" name="type" value="その2"><label for="type2" class="radio-label">その2</label>
           <input id="type3" type="radio" name="type" value="その3"><label for="type3">その3</label>
         </dd>
-        <!-- ラジオボタンのnameと親要素のidを同じにすること -->
       </div>
 
       <div class="form-area-list-item">
         <dt><span>チェックボックス</span></dt>
-        <dd id="check1">
+        <dd>
           <input id="check1-1" type="checkbox" name="check1" value="その1"><label for="check1-1" class="radio-label">その1</label>
           <input id="check1-2" type="checkbox" name="check1" value="その2"><label for="check1-2" class="radio-label">その2</label>
           <input id="check1-3" type="checkbox" name="check1" value="その3"><label for="check1-3">その3</label>
         </dd>
-        <!-- チェックボックスのnameと親要素のidを同じにすること -->
       </div>
 
       <div class="form-area-list-item">
         <dt><span>チェックボックス（必須）</span></dt>
-        <dd id="check2">
+        <dd>
           <input id="check2-1" type="checkbox" name="check2" value="その1"><label for="check2-1" class="radio-label">その1</label>
           <input id="check2-2" type="checkbox" name="check2" value="その2"><label for="check2-2" class="radio-label">その2</label>
           <input id="check2-3" type="checkbox" name="check2" value="その3"><label for="check2-3">その3</label>
         </dd>
-        <!-- チェックボックスのnameと親要素のidを同じにすること -->
       </div>
 
     </dl>
@@ -112,7 +109,7 @@
     <div id="errorsArea" class="form-area-errors"></div>
 
     <div class="form-area-submit">
-      <button id="sendBtn" type="button" class="form-area-submit-btn" name="btn">送信</button><!-- disableクラスを消さないこと -->
+      <button id="sendBtn" type="button" class="form-area-submit-btn" name="btn">送信</button>
     </div>
 
   </form>
@@ -121,7 +118,7 @@
 
 <!-- /フォーム部分 -->
 
-<script type="text/javascript" src="contact/js/contact.js"></script><!-- このjsは挿入ページに追加すること -->
-<script type="text/javascript" src="js/main.js"></script><!-- 独自のjsファイルにパスを書き換えること -->
+<script type="text/javascript" src="contact/js/contact.js"></script><!-- このjsは挿入ページに追加する -->
+<script type="text/javascript" src="js/main.js"></script><!-- 独自のjsファイルにパスを書き換える -->
 </body>
 </html>

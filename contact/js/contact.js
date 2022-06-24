@@ -8,7 +8,6 @@ function UnoMail( myOptions ) {
     submitId: myOptions.submitId,
     cautionId: myOptions.cautionId,
     faildText: myOptions.faildText,
-    disableClass: myOptions.disableClass
   };
   let errors = {};
   let inputs = {};
@@ -29,6 +28,11 @@ function UnoMail( myOptions ) {
   this.getText = function ( id, label, error = null, flag = null ) {
 
     const field = document.getElementById( id );
+
+    if ( error !== null && errors[ id ] == undefined ) {
+
+      errors[ id ] = error;
+    }
 
     field.addEventListener( 'change', () => {
 
@@ -107,30 +111,36 @@ function UnoMail( myOptions ) {
   this.getRadio = function ( id, label ) {
 
     const radios = document.getElementsByName( id );
-    let value = null;
 
     each( radios, function ( radio ) {
 
       radio.addEventListener( 'change', () => {
 
+        let value = null;
+
         if ( radio.checked ) {
 
           value = radio.value;
         }
+
+        inputs[ id ] = {
+          label: label,
+          value: value
+        };
       } );
     } );
-
-    inputs[ id ] = {
-      label: label,
-      value: value
-    };
   }
 
   // チェックボックス
-  this.getCheckbox = function ( id, label, error ) {
+  this.getCheckbox = function ( id, label, error = null ) {
 
     const checkboxes = document.getElementsByName( id );
     let values = [];
+
+    if ( error !== null && errors[ id ] == undefined ) {
+
+      errors[ id ] = error;
+    }
 
     each( checkboxes, function ( checkbox ) {
 
@@ -140,25 +150,30 @@ function UnoMail( myOptions ) {
 
           values.push( checkbox.value );
         }
+        else if ( values.includes( checkbox.value ) ) {
+
+          var index = values.indexOf( checkbox.value );
+          values.splice( index, 1 );
+        }
+
+        inputs[ id ] = {
+          label: label,
+          value: values
+        };
+
+        if ( error !== null ) {
+
+          if ( values.length == 0 ) {
+
+            errors[ id ] = error;
+          }
+          else if ( errors[ id ] !== '' ) {
+
+            errors[ id ] = '';
+          }
+        }
       } );
     } );
-
-    inputs[ id ] = {
-      label: label,
-      value: values
-    };
-
-    if ( error != null ) {
-
-      if ( values.length == 0 ) {
-
-        errors[ id ] = error;
-      }
-      else if ( errors[ id ] !== '' ) {
-
-        errors[ id ] = '';
-      }
-    }
   }
 
   // エラーの有無をチェック
@@ -212,14 +227,14 @@ function UnoMail( myOptions ) {
 
     formField.addEventListener( 'change', function () {
 
+      writeErrors();
+
       if ( isError() ) {
 
-        writeErrors();
         submitBtn.disabled = true;
       }
       else {
 
-        cautionArea.innterHTML = '';
         submitBtn.disabled = false;
       }
     } )
@@ -251,8 +266,6 @@ function UnoMail( myOptions ) {
       response = data;
     } )
     .catch( ( reason ) => {
-
-      console.log( reason );
     } );
 
     return response;

@@ -14,6 +14,14 @@ class UnoMail
   private $mail_body = '';
   private $header = '';
   private $result = '';
+  private $reply_mail_text = '';
+  private $reply_mail_signature = '';
+  private $reply_mail_to_address = '';
+  private $reply_mail_to_name = '';
+  private $reply_mail_to = '';
+  private $reply_mail_body = '';
+  private $reply_header = '';
+  private $reply_result = '';
 
   // メソッド
   // エスケープ処理
@@ -40,15 +48,15 @@ class UnoMail
 
       if ( preg_match( '/\0/', $var ) ) {
 
-        die( json_encode('不正な入力です') );
+        die( json_encode( '不正な入力です', JSON_UNESCAPED_UNICODE ) );
       }
       if ( !mb_check_encoding( $var, 'UTF-8' ) ) {
 
-        die( json_encode('不正な入力です') );
+        die( json_encode( '不正な入力です', JSON_UNESCAPED_UNICODE ) );
       }
       if ( preg_match( '/\A[\r\n\t[:^cntrl:]]*\z/u', $var ) === 0 ) {
 
-        die( json_encode('不正な入力です。制御文字は使用できません') );
+        die( json_encode( '不正な入力です。制御文字は使用できません', JSON_UNESCAPED_UNICODE ) );
       }
 
       return $var;
@@ -91,57 +99,40 @@ class UnoMail
   // 全空欄チェック
   private function checkAllBlank( $var ) {
 
-    if ( is_object( $var ) ) {
+    if ( is_array( $var ) ) {
 
-      foreach ( $var as $key => $value ) {
+      foreach ( $var as $content ) {
 
-        if ( $this->is_nullorwhitespace( $value ) === false ) {
-
-          return;
-        }
-      }
-      die( json_encode('全て空欄です') );
-    }
-    elseif ( is_array( $var ) ) {
-
-      foreach ( $var as $item ) {
-
-        if ( $this->is_nullorwhitespace( $item ) === false ) {
+        if ( $this->is_nullorwhitespace( $content[ 'value' ] ) === false ) {
 
           return;
         }
       }
-      die( json_encode('全て空欄です') );
+      die( json_encode( '全て空欄です', JSON_UNESCAPED_UNICODE ) );
     }
-    else {
 
-      if ( $this->is_nullorwhitespace( $var ) === false ) {
-
-        return;
-      }
-      die( json_encode('全て空欄です') );
-    }
+    die( json_encode( 'データが正しい形式ではありません', JSON_UNESCAPED_UNICODE ) );
   }
 
   // オブジェクトのテキスト変換
   private function changeObjText( $obj ) {
 
-    foreach ( $obj as $key => $value ) {
+    foreach ( $obj as $item ) {
 
-      if ( is_array( $value ) ) {
+      $this->inputs_text .= $this->h( $item[ 'label' ] ). ': ';
 
-        $this->inputs_text .= $this->h( $key ). ": ";
+      if ( is_array( $item[ 'value' ] ) ) {
 
-        foreach( $value as $item ) {
+        foreach ( $item[ 'value' ] as $value_item ) {
 
-          $this->inputs_text .= $this->h( $item ). ", ";
+          $this->inputs_text .= $this->h( $value_item ). ',';
         }
 
         $this->inputs_text .= "\n";
       }
       else {
 
-        $this->inputs_text .= $this->h( $key ). ": ". $this->h( $value ). "\n";
+        $this->inputs_text .= $this->h( $item[ 'value' ] ). "\n";
       }
     }
   }
@@ -156,7 +147,8 @@ class UnoMail
       'mail_subject_text' => '',
       'mail_intro_text' => '',
       'mail_from_address_id' => '',
-      'mail_from_name_id' => ''
+      'mail_from_name_id' => '',
+      'auto_reply' => false
   ] )
   {
 
@@ -178,15 +170,15 @@ class UnoMail
     else {
 
       header( 'content-type: application/json; charset=UTF-8' );
-      echo json_encode('情報がありません');
+      die( json_encode( '情報がありません', JSON_UNESCAPED_UNICODE ) );
     }
 
-    if ( $_SERVER['REQUEST_METHOD'] === 'POST' ) {
+    if ( $_SERVER['REQUEST_METHOD'] === 'POST' ) { // 運営者へのメール送信
 
-      $this->mail_body = $this->mail_intro_text . "\n\n" . $this->inputs_text;
+      $this->mail_body = $this->options['mail_intro_text'] . "\n\n" . $this->inputs_text;
       $this->mail_to = mb_encode_mimeheader( $this->options['mail_to_name'] ) . "<" . $this->options['mail_to_address'] . ">";
-      $this->mail_from_name = $this->deleteLf( $this->h( $this->inputs[ $this->options['mail_from_name_id'] ] ) );
-      $this->mail_from_address = $this->deleteLf( $this->h( $this->inputs[ $this->options['mail_from_address_id'] ] ) );
+      $this->mail_from_name = $this->deleteLf( $this->h( $this->inputs[ $this->options['mail_from_name_id'] ][ 'value'] ) );
+      $this->mail_from_address = $this->deleteLf( $this->h( $this->inputs[ $this->options['mail_from_address_id'] ][ 'value'] ) );
 
       mb_language( 'ja' );
       mb_internal_encoding( 'UTF-8' );
@@ -194,15 +186,45 @@ class UnoMail
       $this->header = "From: " . mb_encode_mimeheader( $this->mail_from_name ) . "<" . $this->mail_from_address . ">\n";
       $this->result = mb_send_mail( $this->mail_to, $this->options['mail_subject_text'], $this->mail_body, $this->header, '-f'. $this->options['mail_return_path'] );
 
-      if( $this->result ) {
+      if ( $this->options['auto_reply'] ) { // 自動返信
 
-        header( 'content-type: application/json; charset=UTF-8' );
-        echo json_encode("complete");
+        $this->reply_mail_text = file_get_contents( __DIR__ . '/autoreply.txt' );
+        $this->reply_mail_signature = file_get_contents( __DIR__ . '/signature.txt' );
+
+        $this->reply_mail_body = $this->reply_mail_text . "\n\n" . $this->inputs_text . "\n\n" . $this->reply_mail_signature;
+        $this->reply_mail_to_name = $this->mail_from_name;
+        $this->reply_mail_to_address = $this->mail_from_address;
+        $this->reply_mail_to = mb_encode_mimeheader( $this->reply_mail_to_name ) . "<" . $this->reply_mail_to_address . ">";
+
+        mb_language( 'ja' );
+        mb_internal_encoding( 'UTF-8' );
+
+        $this->reply_header = "From: " . mb_encode_mimeheader( $this->options['mail_to_name'] ) . "<" . $this->options['mail_to_address'] . ">\n";
+        $this->reply_result = mb_send_mail( $this->reply_mail_to, $this->options['auto_reply_subject_text'], $this->reply_mail_body, $this->reply_header, '-f'. $this->options['mail_return_path'] );
+
+        if( $this->result && $this->reply_result ) {
+
+          header( 'content-type: application/json; charset=UTF-8' );
+          echo json_encode("complete");
+        }
+        else {
+
+          header( 'content-type: application/json; charset=UTF-8' );
+          echo json_encode("fail");
+        }
       }
       else {
 
-        header( 'content-type: application/json; charset=UTF-8' );
-        echo json_encode("fail");
+        if( $this->result ) {
+
+          header( 'content-type: application/json; charset=UTF-8' );
+          echo json_encode("complete");
+        }
+        else {
+
+          header( 'content-type: application/json; charset=UTF-8' );
+          echo json_encode("fail");
+        }
       }
 
       exit;
@@ -210,7 +232,7 @@ class UnoMail
     else {
 
       header( 'content-type: application/json; charset=UTF-8' );
-      echo json_encode('不正なアクセスです');
+      die( json_encode( '不正なアクセスです', JSON_UNESCAPED_UNICODE ) );
     }
   }
 
