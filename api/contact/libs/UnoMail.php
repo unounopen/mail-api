@@ -148,7 +148,10 @@ class UnoMail
       'mail_intro_text' => '',
       'mail_from_address_id' => '',
       'mail_from_name_id' => '',
-      'auto_reply' => false
+      'auto_reply' => false,
+      'auto_reply_subject_text' => '',
+      'auto_reply_text_file' => '',
+      'auto_reply_signature_file' => '',
   ] )
   {
 
@@ -188,8 +191,8 @@ class UnoMail
 
       if ( $this->options['auto_reply'] ) { // 自動返信
 
-        $this->reply_mail_text = file_get_contents( __DIR__ . '/autoreply.txt' );
-        $this->reply_mail_signature = file_get_contents( __DIR__ . '/signature.txt' );
+        $this->reply_mail_text = file_get_contents( __DIR__ . '/' . $this->options[ 'auto_reply_text_file' ] );
+        $this->reply_mail_signature = file_get_contents( __DIR__ . '/' . $this->options[ 'auto_reply_signature_file' ] );
 
         $this->reply_mail_body = $this->reply_mail_text . "\n\n" . $this->inputs_text . "\n\n" . $this->reply_mail_signature;
         $this->reply_mail_to_name = $this->mail_from_name;
