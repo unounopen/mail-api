@@ -3,10 +3,10 @@
 require dirname(__FILE__) . '/libs/UnoMail.php';
 
 $mail = new UnoMail([
-  'domain' => '',
-  'mail_to_address' => '',
+  'domain' => 'ドメイン',
+  'mail_to_address' => '設置者のメールアドレス',
   'mail_to_name' => '差出人の名前（サイト名など）',
-  'mail_return_path' => '',
+  'mail_return_path' => '設置者のメールアドレス',
   'mail_subject_text' => 'サイトからのお問い合わせ',
   'mail_intro_text' => '以下の内容でお問い合わせがありました',
   'mail_from_address_id' => 'email',
