@@ -137,13 +137,18 @@ class UnoMail
     }
   }
 
+  // 例：この処理を新しく追加しました！
+  // オブジェクトのテキスト変換
+  private function sampleFunction() {
+    // なにか追加処理や修正処理を書いたとします。
+    return;
+  }
   // コンストラクタ
   public function __construct(
     $options = [
       'domain' => '',
       'mail_to_address' => '',
       'mail_to_name' => '',
-      'mail_return_path' => '',
       'mail_subject_text' => '',
       'mail_intro_text' => '',
       'mail_from_address_id' => '',
@@ -187,7 +192,7 @@ class UnoMail
       mb_internal_encoding( 'UTF-8' );
 
       $this->header = "From: " . mb_encode_mimeheader( $this->mail_from_name ) . "<" . $this->mail_from_address . ">\n";
-      $this->result = mb_send_mail( $this->mail_to, $this->options['mail_subject_text'], $this->mail_body, $this->header, '-f'. $this->options['mail_return_path'] );
+      $this->result = mb_send_mail( $this->mail_to, $this->options['mail_subject_text'], $this->mail_body, $this->header, '-f'. $this->options['mail_to_address'] );
 
       if ( $this->options['auto_reply'] ) { // 自動返信
 
@@ -203,7 +208,7 @@ class UnoMail
         mb_internal_encoding( 'UTF-8' );
 
         $this->reply_header = "From: " . mb_encode_mimeheader( $this->options['mail_to_name'] ) . "<" . $this->options['mail_to_address'] . ">\n";
-        $this->reply_result = mb_send_mail( $this->reply_mail_to, $this->options['auto_reply_subject_text'], $this->reply_mail_body, $this->reply_header, '-f'. $this->options['mail_return_path'] );
+        $this->reply_result = mb_send_mail( $this->reply_mail_to, $this->options['auto_reply_subject_text'], $this->reply_mail_body, $this->reply_header, '-f'. $this->options['mail_to_address'] );
 
         if( $this->result && $this->reply_result ) {
 
